@@ -7,7 +7,11 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'inicial',
     pathMatch: 'full',
+  },
+  {
+    path: 'inicial',
+    loadComponent: () => import('./inicial/inicial.page').then( m => m.InicialPage)
   },
 ];
