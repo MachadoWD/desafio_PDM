@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonList, IonButton} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonList, IonButton, IonLabel} from '@ionic/angular/standalone';
 
 
 export type Tarefa = {
@@ -24,7 +24,7 @@ export type Produto = {
   templateUrl: './inicial.page.html',
   styleUrls: ['./inicial.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonItem, IonList, IonButton]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonItem, IonList, IonButton, IonLabel]
 })
 export class InicialPage implements OnInit {
 
@@ -44,38 +44,67 @@ export class InicialPage implements OnInit {
       { id: 5, titulo: "Ser feliz", concluida: false, prioridade: "baixa", dataCriacao: new Date},
     ]
 
-    formatarPreco(preco: number): string {
-      let valorFormatado: string = preco.toFixed(2).replace(/\./g, ',');
-      return "R$" + valorFormatado;
+  apresentarValorEstoque: boolean = false;
+  apresentarProdutos: boolean = false;
+  apresentarTarefas: boolean = false;
+  ordernar: boolean = false;
+  filtro: boolean = false;
+  tarefasFiltradas: Tarefa[] = [];
+
+  listarProdutos() {
+    this.apresentarProdutos = true;
+    return true;
+  }
+
+  listarTarefas() {
+    this.apresentarTarefas = true;
+    return true;
+  }
+
+  formatarPreco(preco: number): string {
+    let valorFormatado: string = preco.toFixed(2).replace(/\./g, ',');
+    return "R$" + valorFormatado;
+  }
+
+  calcularTotalEstoque() {
+    
+    let valorEstoque: number = 0;
+
+    for (let i = 0; i < this.listaProdutos.length; i++) {
+      
+      valorEstoque += this.listaProdutos[i].preco * this.listaProdutos[i].estoque
     }
 
-    calcularValorEstoque(estoque: number, preco: number): string {
-      let valorTotal: number = estoque * preco;
-      let valorFormatado: string = valorTotal.toFixed(2).replace(/\./g, ',');
-      return "R$" + valorFormatado;
-    }
+    return this.formatarPreco(valorEstoque);
+  }
 
 
-    filtrarTarefas(): string {
-      let pendentes = "Pendentes: "
-      let concluidas = "Concluidas: "
+  filtrarTarefas(concluida: boolean){
+    this.tarefasFiltradas = this.listaTarefas.filter(
+      tarefa => tarefa.concluida === concluida
+    );
 
+    this.filtro = true;
+  }
 
-      this.listaTarefas.forEach(tarefa => {
-        if (tarefa.concluida){
-          (concluidas += "," + (tarefa.titulo) + " ")
-        }
-      })
+  ordenarPorPrioridade(){
 
-      this.listaTarefas.forEach(tarefa => {
-        if (!tarefa.concluida){
-          (pendentes += "," + (tarefa.titulo) + " ")
-        }
-      })
-      return (concluidas + "\n" + pendentes)
+    const ordemPrioridade = {
+        alta: 1,
+        media: 2,
+        baixa: 3
+      };
 
-    }
+      this.listaTarefas.sort((a, b) => {
+        return ordemPrioridade[a.prioridade] - ordemPrioridade[b.prioridade];
+      });
 
+    this.ordernar = true;
+  } 
+
+  concluirTarefa(tarefa: Tarefa) {
+    tarefa.concluida = !tarefa.concluida;
+  }
   constructor() { }
 
   ngOnInit() {

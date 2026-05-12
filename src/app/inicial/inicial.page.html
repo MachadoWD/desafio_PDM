@@ -11,9 +11,34 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
+  <ion-button (click)="listarProdutos()">Listar Produtos</ion-button>
+  <ion-button (click)="listarTarefas()">Listar Tarefas</ion-button>
+
+  <ion-list *ngIf="apresentarProdutos">
+    <ion-label>Produtos em Estoque:</ion-label>
     <ion-item *ngFor="let produto of listaProdutos">
       {{ produto.nome }} - {{ formatarPreco(produto.preco) }}
     </ion-item>
+    <ion-button (click)="apresentarProdutos = false">Fechar Lista</ion-button> 
+    <ion-button (click)="apresentarValorEstoque = true">Mostrar Valor Total do Estoque</ion-button>
+    <p *ngIf="apresentarValorEstoque">
+        Valor Total do Estoque:
+        {{ calcularTotalEstoque() }}
+    </p>
+  </ion-list>
+
+  
+  <ion-list *ngIf="apresentarTarefas">
+    <ion-label>Tarefas:</ion-label>
+    <ion-item *ngFor="let tarefa of (filtro ? tarefasFiltradas : listaTarefas)">
+      {{ tarefa.titulo }} - {{ tarefa.prioridade }} - {{ tarefa.concluida ? 'Concluída' : 'Pendente' }} 
+      <ion-button (click)="concluirTarefa(tarefa)" *ngIf="!tarefa.concluida">Concluir</ion-button>
+    </ion-item>
+
+    <ion-button (click)="apresentarTarefas = false">Fechar Lista</ion-button>
+    <ion-button (click)="ordenarPorPrioridade()">Ordernar por Prioridade</ion-button>
+    <ion-button (click)="filtrarTarefas(false)">Pendentes</ion-button>
+    <ion-button (click)="filtrarTarefas(true)">Concluídas</ion-button>
+    <ion-button (click)="filtro = false">Mostrar Todas</ion-button>
   </ion-list>
 </ion-content>
