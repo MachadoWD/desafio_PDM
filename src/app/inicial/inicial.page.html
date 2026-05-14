@@ -4,22 +4,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" >
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">inicial</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  
   <ion-button (click)="listarProdutos()">Listar Produtos</ion-button>
   <ion-button (click)="listarTarefas()">Listar Tarefas</ion-button>
+  <ion-button (click)="sair()">Sair</ion-button>
 
   <ion-list *ngIf="apresentarProdutos">
     <ion-label>Produtos em Estoque:</ion-label>
     <ion-item *ngFor="let produto of listaProdutos">
       {{ produto.nome }} - {{ formatarPreco(produto.preco) }}
     </ion-item>
-    <ion-button (click)="apresentarProdutos = false">Fechar Lista</ion-button> 
+    <ion-button (click)="apresentarProdutos = false">Fechar Lista</ion-button>
+    <ion-button (click)="irCadastrarProduto()">Cadastrar Produto</ion-button>
     <ion-button (click)="apresentarValorEstoque = true">Mostrar Valor Total do Estoque</ion-button>
     <p *ngIf="apresentarValorEstoque">
         Valor Total do Estoque:
@@ -41,4 +44,6 @@
     <ion-button (click)="filtrarTarefas(true)">Concluídas</ion-button>
     <ion-button (click)="filtro = false">Mostrar Todas</ion-button>
   </ion-list>
+
+  
 </ion-content>

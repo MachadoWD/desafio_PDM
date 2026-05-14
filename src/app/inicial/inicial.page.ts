@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonList, IonButton, IonLabel} from '@ionic/angular/standalone';
-
+import { App } from '@capacitor/app';
 
 export type Tarefa = {
   id: number,
@@ -44,6 +44,8 @@ export class InicialPage implements OnInit {
       { id: 5, titulo: "Ser feliz", concluida: false, prioridade: "baixa", dataCriacao: new Date},
     ]
 
+  // Variáveis de controle
+
   apresentarValorEstoque: boolean = false;
   apresentarProdutos: boolean = false;
   apresentarTarefas: boolean = false;
@@ -51,19 +53,18 @@ export class InicialPage implements OnInit {
   filtro: boolean = false;
   tarefasFiltradas: Tarefa[] = [];
 
-  listarProdutos() {
-    this.apresentarProdutos = true;
-    return true;
-  }
-
-  listarTarefas() {
-    this.apresentarTarefas = true;
-    return true;
-  }
+  // Formatar Gerais
 
   formatarPreco(preco: number): string {
     let valorFormatado: string = preco.toFixed(2).replace(/\./g, ',');
     return "R$" + valorFormatado;
+  }
+
+  // Funções dos Produtos
+
+  listarProdutos() {
+    this.apresentarProdutos = true;
+    return true;
   }
 
   calcularTotalEstoque() {
@@ -72,12 +73,18 @@ export class InicialPage implements OnInit {
 
     for (let i = 0; i < this.listaProdutos.length; i++) {
       
-      valorEstoque += this.listaProdutos[i].preco * this.listaProdutos[i].estoque
+      valorEstoque += this.listaProdutos[i].preco * this.listaProdutos[i].estoque;
     }
 
     return this.formatarPreco(valorEstoque);
   }
 
+  // Funções das Tarefas
+
+  listarTarefas() {
+    this.apresentarTarefas = true;
+    return true;
+  }
 
   filtrarTarefas(concluida: boolean){
     this.tarefasFiltradas = this.listaTarefas.filter(
@@ -103,11 +110,35 @@ export class InicialPage implements OnInit {
   } 
 
   concluirTarefa(tarefa: Tarefa) {
-    tarefa.concluida = !tarefa.concluida;
+    tarefa.concluida = !tarefa.concluida
   }
+
+  // Navegação
+
+  irCadastrarProduto() {
+    window.location.href = '/cadastrar-produto';
+  }
+  sair() {
+    window.location.href = '/home';
+  }
+
   constructor() { }
 
   ngOnInit() {
-  }
 
+    const produtosSalvos =
+    localStorage.getItem('produtos');
+
+    if (produtosSalvos) {
+
+      const novosProdutos =
+        JSON.parse(produtosSalvos);
+
+      this.listaProdutos = [
+        ...this.listaProdutos,
+        ...novosProdutos
+      ];
+
+    }
+  }
 }
